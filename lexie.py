@@ -6,20 +6,7 @@ import math
 
 MINIMUM_WORD_LENGTH = 3
 MAXIMUM_WORD_LENGTH = 3
-MINIMUM_WORD_FREQUENCY = 2
-WORD_FREQUENCY_THRESHOLD = { 3:     20,
-                             4:     15,
-                             5:     12,
-                             6:     10,
-                             7:     5,
-                             8:     4,
-                             9:     3,
-                             10:    2,
-                             11:    2,
-                             12:    2,
-                             13:    2,
-                             14:    2,
-                             15:    2} # How often a word has to appear in the raw corpus to qualify for the wordlist
+MINIMUM_WORD_FREQUENCY = 2  # How often a word has to appear in the raw corpus to qualify for the wordlist
 
 def read(filename, delimiter="\t"):
     raw = open(filename,"r").read().split('\n')
@@ -29,44 +16,6 @@ def read(filename, delimiter="\t"):
             wl_arr.append(raw[i].split(delimiter))
     else:
         wl_arr = raw
-    return wl_arr
-
-def count(wl_arr_of_arrs, column, has_header=True):
-    column -= 1
-    wl_dict = {}
-    start = 1
-    if not has_header:
-        start = 0
-    for i in range(start, len(wl_arr_of_arrs)):
-        key = wl_arr_of_arrs[i][column].upper()
-        wl_dict[key] = wl_dict.get(key, 0) + 1 # increment its frequency
-    return wl_dict
-
-def clean(wl, flags):
-    for key, value in list(wl.items()):
-        isInvalid = False
-        if "r" in flags: # remove rare entries
-            if value < WORD_FREQUENCY_THRESHOLD[len(key)]:
-                isInvalid = True
-        if "l" in flags: # remove entries too short or long to be in a puzzle
-            if len(key) < MINIMUM_WORD_LENGTH or len(key) > MAXIMUM_WORD_LENGTH:
-                isInvalid = True
-        if "i" in flags: # remove entries that aren't all letters
-            if not key.isalpha():
-                isInvalid = True
-        if isInvalid:
-            del wl[key]
-    return wl
-
-def segregate(wl_dict):
-    wl_arr = []
-    for key, value in list(wl_dict.items()):
-        if len(key) >= len(wl_arr):
-            while len(key) >= len(wl_arr):
-                wl_arr.append({})
-        wl_arr[len(key)][key] = value
-    # for i in range(len(wl_arr)):
-    #     wl_arr[i].sort()
     return wl_arr
 
 def write(wl_arr, filepath, scored=False, sorted_by="keys"):
@@ -98,12 +47,12 @@ def score(words):
                 xw_score = int(re.search(r'\d+', str(xw_page.find_all(string=re.compile("we have spotted"))))[0])
             except TypeError:
                 xw_score = 0
-            # Culture score is number of Google results in the past year, in tens of thousands
-            cu_score = int(re.search(r'\d+(,?\d*)*', str(cu_page.find(id="resultStats").string))[0].replace(",","")) / math.pow(2,16)
+            # Culture score is number of Google results in the past year, in millions
+            cu_score = int(re.search(r'\d+(,?\d*)*', str(cu_page.find(id="resultStats").string))[0].replace(",","")) / 1000000
             if not xw_score or xw_score < MINIMUM_WORD_FREQUENCY: # Disqualify non-crossword words
                 scored_wl[word] = 0
             else:
-                scored_wl[word] = round(math.log2(xw_score * cu_score))
+                scored_wl[word] = round(cu_score * xw_score)
             print(word, scored_wl[word])
     return scored_wl
 
@@ -120,8 +69,8 @@ def score(words):
 #         (crossword_score, culture_score) = score(word)
 #         print(word + "\t" + str(crossword_score) + "\t" + str(culture_score))
 
-# wl = score(read("wl-test.txt", False))
-# for key, value in sorted(wl.items(), key=operator.itemgetter(1)):
-#     print(key + "\t" + str(value))
+wl = score(read("wl-test2.txt", False))
+for key, value in sorted(wl.items(), key=operator.itemgetter(1)):
+    print(key + "\t" + str(value))
 
-print(score(["THE"]))
+# print(score(["THE"]))
