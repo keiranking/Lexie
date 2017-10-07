@@ -11,7 +11,7 @@ MINIMUM_WORD_SCORE = 60
 
 class Wordlist(object):
     def __init__(self, file): # takes file containing one entry per line and nothing else
-        self.words = []
+        self.words = [{}, {}, {}]
         self._temp_words = []
         try:
             with open(file, "r") as raw:
@@ -22,13 +22,13 @@ class Wordlist(object):
                         new_word = new_word.strip().upper()
                         while len(new_word) >= len(self._temp_words):
                             self._temp_words.append([])
-                            self.words.append({})
+                            # self.words.append({})
                         if MAXIMUM_WORD_LENGTH >= len(new_word) >= MINIMUM_WORD_LENGTH\
                                 and new_word not in self._temp_words[len(new_word)]:
                             self._temp_words[len(new_word)].append(new_word)
 
                 for i in range(3, len(self._temp_words)):
-                    self.words[i] = self.score(self._temp_words[i])
+                    self.words.append(self.score(self._temp_words[i]))
                 print("Wordlist imported.")
 
         except FileNotFoundError:
@@ -68,7 +68,7 @@ class Wordlist(object):
                 if sorted_by == "keys":
                     sorted_wl = sorted(self.words[i].items())
                 else:
-                    sorted_wl = sorted(self.words[i].items(), key=operator.itemgetter(1))
+                    sorted_wl = sorted(self.words[i].items(), key=operator.itemgetter(1), reverse=True)
                 for key, value in sorted_wl:
                     doc.write(key)
                     if scored:
@@ -82,32 +82,9 @@ class Wordlist(object):
             print("Could not open '" + file + "'.")
             return
 
-# def read(filename, delimiter="\t"):
-#     raw = open(filename,"r").read().split('\n')
-#     wl_arr = []
-#     if delimiter:
-#         for i in range(0, len(raw)):
-#             wl_arr.append(raw[i].split(delimiter))
-#     else:
-#         wl_arr = raw
-#     return wl_arr
-
 # Main
 # ====
 # print(read("../GN-300,000.tsv")[0:20])
-
-# Take a wordlist, clean it, reorder and write to file, scored or unscored
-# write(segregate(clean(count(read("../WL-SP.tsv"), 3), "-ilr")), "wl.txt")
-# write(segregate(clean(count(read("../WL-SP.tsv"), 3), "-il")), "wl-test.txt", False, "values")
-
-# for word in score(read("wl-test.txt", False)):
-#     if word:
-#         (crossword_score, culture_score) = score(word)
-#         print(word + "\t" + str(crossword_score) + "\t" + str(culture_score))
-
-# wl = score(read("wl-test2.txt", False))
-# for key, value in sorted(wl.items(), key=operator.itemgetter(1)):
-#     print(key + "\t" + str(value))
 
 # print(score(["THE"]))
 
