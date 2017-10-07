@@ -99,7 +99,7 @@ def score(words):
             except TypeError:
                 xw_score = 0
             # Culture score is number of Google results in the past year, in tens of thousands
-            cu_score = int(re.search(r'\d+(,?\d*)*', str(cu_page.find(id="resultStats").string))[0].replace(",","")) / 10000
+            cu_score = int(re.search(r'\d+(,?\d*)*', str(cu_page.find(id="resultStats").string))[0].replace(",","")) / math.pow(2,16)
             if not xw_score or xw_score < MINIMUM_WORD_FREQUENCY: # Disqualify non-crossword words
                 scored_wl[word] = 0
             else:
@@ -120,7 +120,8 @@ def score(words):
 #         (crossword_score, culture_score) = score(word)
 #         print(word + "\t" + str(crossword_score) + "\t" + str(culture_score))
 
-wl = score(read("wl-test.txt", False))
-# print(wl)
-for key, value in sorted(wl.items(), key=operator.itemgetter(1)):
-    print(key + "\t" + str(value))
+# wl = score(read("wl-test.txt", False))
+# for key, value in sorted(wl.items(), key=operator.itemgetter(1)):
+#     print(key + "\t" + str(value))
+
+print(score(["THE"]))
