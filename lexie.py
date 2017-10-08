@@ -1,8 +1,12 @@
+# Lexie scores wordlists for crosswords.
+# She takes any text file with one word or phrase per line.
+# She rejects entries new to crosswords (conservative).
+# She boosts what is current, and demotes what is obsolete (myopic).
+# =============================================================================
 import re
 import requests as req
 from bs4 import BeautifulSoup as BS
 import operator
-import math
 
 MINIMUM_WORD_LENGTH = 3
 MAXIMUM_WORD_LENGTH = 15
@@ -44,8 +48,6 @@ class Wordlist(object):
                         and new_word not in new_words[l]:
                     new_words[l].append(new_word)
                     count += 1
-                # print(new_word, new_words[len(new_word)])
-                # print(new_word, self.words[len(new_word)])
 
         for i in range(3, len(new_words)):
             print("Adding " + str(i) + "-letter words...")
@@ -108,15 +110,11 @@ class Wordlist(object):
 
 # Main
 # ====
-# print(read("../GN-300,000.tsv")[0:20])
-
-# print(score(["THE"]))
-
 # wl = Wordlist("wl-test2.txt")
 # wl.write("wl-test2-results4.txt", True, "scores")
 
 wl = Wordlist()
 # wl.add(["doi", "sonofa", "grr", "yadig", "taylorswift", "sanfran", "ohwow", "tryon"])
-wl.add(["flavodoxin", "lyase", "neap", "keepsake"])
+wl.add(["keepsake"])
 # print(wl, wl[4])
 # wl.write("wl-test3-results1.txt", True, "scores")
