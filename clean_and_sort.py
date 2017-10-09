@@ -3,10 +3,31 @@ import requests as req
 from bs4 import BeautifulSoup as BS
 import operator
 import math
+import os
+import json
 
-MINIMUM_WORD_LENGTH = 4
-MAXIMUM_WORD_LENGTH = 4
+MINIMUM_WORD_LENGTH = 3
+MAXIMUM_WORD_LENGTH = 15
 MINIMUM_WORD_FREQUENCY = 2 # How often a word has to appear in the raw corpus to qualify for the wordlist
+
+def collect_crossword_frequency():
+    xw_scores = {}
+    for dirpath, dirnames, filenames in os.walk("../test"):
+        for dirname in dirnames:
+            file = os.path.join(dirpath, dirname, "index.html")
+            with open(file, "r") as raw:
+            # try:
+                xw_scrape = BS(raw.read(), "html.parser")
+                xw_score = int(re.search(r'\d+', str(xw_scrape.find_all(string=re.compile("we have spotted"))))[0])
+                # print(dirname + "\t" + str(xw_score))
+
+                if xw_score >= MINIMUM_WORD_FREQUENCY and len(dirname) >= MINIMUM_WORD_LENGTH and dirname.isalpha():
+                    xw_scores[dirname.upper()] = xw_score
+    print(xw_scores)
+    print(json.dumps(xw_scores, indent=4))
+            # except:
+            #     print("Error.")
+
 
 def read(filename, delimiter="\t"):
     raw = open(filename,"r").read().split('\n')
@@ -84,3 +105,5 @@ def write(wl_arr, filepath, scored=False, sorted_by="keys"):
 #     if word:
 #         (crossword_score, culture_score) = score(word)
 #         print(word + "\t" + str(crossword_score) + "\t" + str(culture_score))
+
+collect_crossword_frequency()
