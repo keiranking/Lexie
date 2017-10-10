@@ -10,24 +10,24 @@ MINIMUM_WORD_LENGTH = 3
 MAXIMUM_WORD_LENGTH = 15
 MINIMUM_WORD_FREQUENCY = 2 # How often a word has to appear in the raw corpus to qualify for the wordlist
 
-def collect_crossword_frequency():
-    xw_scores = {}
-    for dirpath, dirnames, filenames in os.walk("../test"):
+def collect_CT_frequency():
+    xw_scores = [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
+    for dirpath, dirnames, filenames in os.walk("../answer"):
         for dirname in dirnames:
             file = os.path.join(dirpath, dirname, "index.html")
             with open(file, "r") as raw:
-            # try:
                 xw_scrape = BS(raw.read(), "html.parser")
                 xw_score = int(re.search(r'\d+', str(xw_scrape.find_all(string=re.compile("we have spotted"))))[0])
                 # print(dirname + "\t" + str(xw_score))
 
-                if xw_score >= MINIMUM_WORD_FREQUENCY and len(dirname) >= MINIMUM_WORD_LENGTH and dirname.isalpha():
-                    xw_scores[dirname.upper()] = xw_score
-    print(xw_scores)
-    print(json.dumps(xw_scores, indent=4))
-            # except:
-            #     print("Error.")
-
+                if xw_score >= MINIMUM_WORD_FREQUENCY and MAXIMUM_WORD_LENGTH >= len(dirname) >= MINIMUM_WORD_LENGTH and dirname.isalpha():
+                    xw_scores[len(dirname)][dirname.upper()] = xw_score
+    # print(xw_scores)
+    try:
+        doc = open("test3-r2.txt", "w")
+        doc.write(json.dumps(xw_scores, indent=4))
+    except:
+        print("Error opening file to write")
 
 def read(filename, delimiter="\t"):
     raw = open(filename,"r").read().split('\n')
@@ -106,4 +106,18 @@ def write(wl_arr, filepath, scored=False, sorted_by="keys"):
 #         (crossword_score, culture_score) = score(word)
 #         print(word + "\t" + str(crossword_score) + "\t" + str(culture_score))
 
-collect_crossword_frequency()
+# collect_CT_frequency()
+
+arr = read("wl-sp.txt")
+wl = []
+for item in arr:
+    if len(item) > 1:
+        while len(item[0]) >= len(wl):
+            wl.append({})
+        if int(item[1]) >= MINIMUM_WORD_FREQUENCY:
+            wl[len(item[0])][item[0]] = item[1]
+try:
+    doc = open("wl-sp.json.txt", "w")
+    doc.write(json.dumps(wl, indent=4))
+except:
+    print("Error opening file to write")

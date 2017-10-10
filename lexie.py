@@ -10,7 +10,7 @@ import operator
 
 MINIMUM_WORD_LENGTH = 3
 MAXIMUM_WORD_LENGTH = 15
-MINIMUM_XW_APPEARANCES = 2  # Minimum crossword appearances to qualify for wordlist
+MINIMUM_XW_APPEARANCES = 1  # Minimum crossword appearances to qualify for wordlist
 MINIMUM_WORD_SCORE = 60
 
 class Wordlist(object):
@@ -83,7 +83,7 @@ class Wordlist(object):
                         re.search(r'\d+(,?\d*)*', str(cu_scrape.find(id="resultStats").string))[0].replace(",", "")) / 1000000
 
                     scored_wl[candidate] = round(cu_score * xw_score)
-                print(candidate, scored_wl[candidate])
+                print(candidate, xw_score, cu_score, scored_wl[candidate])
         return scored_wl
 
     def write(self, filepath, scored=False, sorted_by="keys"):
@@ -110,11 +110,11 @@ class Wordlist(object):
 
 # Main
 # ====
-# wl = Wordlist("wl-test2.txt")
-# wl.write("wl-test2-results4.txt", True, "scores")
+wl = Wordlist("wl-scratch.txt")
+# wl.write("wl-test-results4.txt", True, "scores")
 
-wl = Wordlist()
+# wl = Wordlist()
 # wl.add(["doi", "sonofa", "grr", "yadig", "taylorswift", "sanfran", "ohwow", "tryon"])
-wl.add(["keepsake"])
+# wl.add(["keepsake"])
 # print(wl, wl[4])
 # wl.write("wl-test3-results1.txt", True, "scores")
