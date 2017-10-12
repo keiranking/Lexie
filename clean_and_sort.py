@@ -10,9 +10,9 @@ MINIMUM_WORD_LENGTH = 3
 MAXIMUM_WORD_LENGTH = 15
 MINIMUM_WORD_FREQUENCY = 2 # How often a word has to appear in the raw corpus to qualify for the wordlist
 
-def collect_CT_frequency():
+def collect_CT_frequency(rootpath):
     xw_scores = [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ]
-    for dirpath, dirnames, filenames in os.walk("../answer"):
+    for dirpath, dirnames, filenames in os.walk(rootpath):
         for dirname in dirnames:
             file = os.path.join(dirpath, dirname, "index.html")
             with open(file, "r") as raw:
@@ -22,6 +22,7 @@ def collect_CT_frequency():
 
                 if xw_score >= MINIMUM_WORD_FREQUENCY and MAXIMUM_WORD_LENGTH >= len(dirname) >= MINIMUM_WORD_LENGTH and dirname.isalpha():
                     xw_scores[len(dirname)][dirname.upper()] = xw_score
+                    print(dirname.upper(), xw_score)
     # print(xw_scores)
     try:
         doc = open("test3-r2.txt", "w")
@@ -106,18 +107,18 @@ def write(wl_arr, filepath, scored=False, sorted_by="keys"):
 #         (crossword_score, culture_score) = score(word)
 #         print(word + "\t" + str(crossword_score) + "\t" + str(culture_score))
 
-# collect_CT_frequency()
+# collect_CT_frequency("../answer")
 
-arr = read("wl-sp.txt")
-wl = []
-for item in arr:
-    if len(item) > 1:
-        while len(item[0]) >= len(wl):
-            wl.append({})
-        if int(item[1]) >= MINIMUM_WORD_FREQUENCY:
-            wl[len(item[0])][item[0]] = item[1]
-try:
-    doc = open("wl-sp.json.txt", "w")
-    doc.write(json.dumps(wl, indent=4))
-except:
-    print("Error opening file to write")
+# arr = read("wl-sp.txt")
+# wl = []
+# for item in arr:
+#     if len(item) > 1:
+#         while len(item[0]) >= len(wl):
+#             wl.append({})
+#         if int(item[1]) >= MINIMUM_WORD_FREQUENCY:
+#             wl[len(item[0])][item[0]] = item[1]
+# try:
+#     doc = open("wl-sp.json.txt", "w")
+#     doc.write(json.dumps(wl, indent=4))
+# except:
+#     print("Error opening file to write")
