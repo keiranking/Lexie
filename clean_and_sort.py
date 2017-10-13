@@ -31,6 +31,7 @@ def collect_CT_frequency(rootpath):
         print("Error opening file to write")
 
 def read(filename, delimiter="\t"):
+    print("Opening", filename)
     raw = open(filename,"r").read().split('\n')
     wl_arr = []
     if delimiter:
@@ -38,9 +39,23 @@ def read(filename, delimiter="\t"):
             wl_arr.append(raw[i].split(delimiter))
     else:
         wl_arr = raw
+    print("Read", str(len(wl_arr)), "lines")
     return wl_arr
 
+def remove_before_year(wl_arr_of_arrs, year, has_header=True):
+    print("Removing entries before", str(year), "...")
+    count = 0
+    for entry in wl_arr_of_arrs:
+        if not entry[1].isalpha():
+            if int(entry[1]) < year:
+                wl_arr_of_arrs.remove(entry)
+                count += 1
+                print(str(count), "entries before", str(year), "removed")
+    print("Entries removed.")
+    return wl_arr_of_arrs
+
 def count(wl_arr_of_arrs, column, has_header=True):
+    print("Counting entries...")
     column -= 1
     wl_dict = {}
     start = 1
@@ -49,9 +64,12 @@ def count(wl_arr_of_arrs, column, has_header=True):
     for i in range(start, len(wl_arr_of_arrs)):
         key = wl_arr_of_arrs[i][column].upper()
         wl_dict[key] = wl_dict.get(key, 0) + 1 # increment its frequency
+        print(key, str(wl_dict[key]))
+    print("Entries counted.")
     return wl_dict
 
 def clean(wl, flags):
+    print("Cleaning entries...")
     for key, value in list(wl.items()):
         isInvalid = False
         if "r" in flags: # remove rare entries
@@ -64,10 +82,13 @@ def clean(wl, flags):
             if not key.isalpha():
                 isInvalid = True
         if isInvalid:
+            print("Removed", key, str(wl[key]))
             del wl[key]
+    print("Entries cleaned.")
     return wl
 
 def segregate(wl_dict):
+    print("Segregating entries by length...")
     wl_arr = []
     for key, value in list(wl_dict.items()):
         if len(key) >= len(wl_arr):
@@ -76,9 +97,12 @@ def segregate(wl_dict):
         wl_arr[len(key)][key] = value
     # for i in range(len(wl_arr)):
     #     wl_arr[i].sort()
+    print("Entries segregated")
+    for i in range(3, len(wl_arr)):
+        print(str(len(wl_arr[i])), str(i) + "-letter entries")
     return wl_arr
 
-def write(wl_arr, filepath, scored=False, sorted_by="keys"):
+def write(wl_arr, filepath, print_score=False, sorted_by="keys"):
     doc = open(filepath, "w")
     for i in range(3, len(wl_arr)):
         doc.write(str(i) + "\n") # Print a heading for each word length
@@ -88,19 +112,32 @@ def write(wl_arr, filepath, scored=False, sorted_by="keys"):
             sorted_wl = sorted(wl_arr[i].items(), key=operator.itemgetter(1))
         for key, value in sorted_wl:
             doc.write(key)
-            if scored:
+            if print_score:
                 doc.write("\t" + str(value))
             doc.write("\n")
         doc.write("\n")
     doc.close()
 
+def writeJSON(wl_arr, filepath, sorted_by="keys"):
+    print("Writing to", filepath)
+    # sorted_wl = []
+    # for i in range(len(wl_arr)):
+    #     if sorted_by == "keys":
+    #         sorted_wl.append(sorted(wl_arr[i].items()))
+    #     else:
+    #         sorted_wl.append(sorted(wl_arr[i].items(), key=operator.itemgetter(1)))
+    doc = open(filepath, "w")
+    doc.write(json.dumps(wl_arr, indent=4))
+    doc.close()
+
+
 # Main
 # ====
-# print(read("../GN-300,000.tsv")[0:20])
-
 # Take a wordlist, clean it, reorder and write to file, scored or unscored
-# write(segregate(clean(count(read("../WL-SP.tsv"), 3), "-ilr")), "wl.txt")
+writeJSON(segregate(clean(count(remove_before_year(read("../WL-SP -1970.tsv"), 1970), 3), "-ilr")), "test.txt")
 # write(segregate(clean(count(read("../WL-SP.tsv"), 3), "-il")), "wl-test.txt", False, "values")
+
+# writeJSON([{}, {}, {}, {"ant": 8, "boy": 6, "cat": 4}, {"boxy": 7, "cozy": 5, "dogs": 9}, {"cover": 15, "duvet": 13}], "test.txt", "values")
 
 # for word in score(read("wl-test.txt", False)):
 #     if word:
@@ -122,3 +159,5 @@ def write(wl_arr, filepath, scored=False, sorted_by="keys"):
 #     doc.write(json.dumps(wl, indent=4))
 # except:
 #     print("Error opening file to write")
+
+# print(remove_before_year([["nyt", "1945"], ["nyt", "2005"], ["lat", "1969"], ["usa", "1970"]], 1970))

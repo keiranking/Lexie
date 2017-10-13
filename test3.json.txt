@@ -1,0 +1,47 @@
+[
+    {},
+    {},
+    {},
+    {},
+    {
+        "TSKS": 96800
+    },
+    {
+        "EMBRY": 510000
+    },
+    {
+        "DOURIF": 66700,
+        "UNFELT": 7960
+    },
+    {
+        "EXPLAIN": 104000000,
+        "THELOVE": 20300
+    },
+    {
+        "AMASSERS": 163,
+        "ANAISNIN": 3390,
+        "LETSLIDE": 51,
+        "NOSEEUMS": 2450,
+        "PORTLAND": 62200000,
+        "PROPHESY": 155000,
+        "WELSHERS": 276
+    },
+    {
+        "INTRUDERS": 1580000,
+        "NINETIETH": 16000,
+        "TONOAVAIL": 57
+    },
+    {
+        "WATERMELON": 8720000
+    },
+    {},
+    {},
+    {
+        "BITTERENEMIES": 206
+    },
+    {},
+    {
+        "FULLLENGTHMOVIE": 1210,
+        "SWAPPEDSADTALES": 0
+    }
+]
