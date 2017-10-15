@@ -1,21 +1,35 @@
 from matplotlib import pyplot as plt
-import numpy as np
-# import matplotlib
+import json
+import math
 
-# Fixing random state for reproducibility
-np.random.seed(19680801)
+ct = json.loads(open("ct-intersect.json.txt","r").read())
+gs = json.loads(open("gs-intersect.json.txt","r").read())
 
+blacklist = open("blacklist.txt", "r").read().split("\n")
+whitelist = open("whitelist.txt", "r").read().split("\n")
 
-x = np.arange(0.0, 50.0, 2.0)
-y = x ** 1.3 + np.random.rand(*x.shape) * 30.0
-z = x ** 1.5 + np.random.rand(*x.shape) * 20.0
-s = np.random.rand(*x.shape) * 800 + 500
+blacklist_x = []
+blacklist_y = []
+whitelist_x = []
+whitelist_y = []
 
-plt.scatter(x, y, None, c="red", alpha=0.7, marker=r'o',
-            label="In")
-plt.scatter(x, z, None, c="blue", alpha=0.7, marker=r'o',
-            label="Out")
+for entry in blacklist:
+    if entry:
+        l = len(entry)
+        blacklist_x.append(math.log10(gs[l][entry]))
+        blacklist_y.append(ct[l][entry])
+
+for entry in whitelist:
+    if entry:
+        l = len(entry)
+        whitelist_x.append(math.log10(gs[l][entry]))
+        whitelist_y.append(ct[l][entry])
+
+plt.scatter(whitelist_x, whitelist_y, None, c="blue", alpha=0.4, marker=r'o',
+            label="good")
+plt.scatter(blacklist_x, blacklist_y, None, c="red", alpha=0.8, marker=r'o',
+            label="bad")
 plt.xlabel("Cultural relevance")
 plt.ylabel("Crossword appearances")
-plt.legend(loc=2)
+# plt.legend(loc=2)
 plt.show()

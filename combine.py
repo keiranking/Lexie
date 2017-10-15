@@ -15,7 +15,7 @@ def intersect(ct, gs):
             if gs[i].get(key):
                 ct_intersect[i][key] = value
                 gs_intersect[i][key] = gs[i][key]
-                count++
+                count += 1
                 print(key)
             print(count, "of", len(ct[i]), "entries")
     return (ct_intersect, gs_intersect)
