@@ -28,11 +28,11 @@ for entry in whitelist:
         # whitelist_y.append(ct[l][entry])
         whitelist_y.append(math.log10(int(sp[l][entry])))
 
-plt.scatter(whitelist_x, whitelist_y, None, c="blue", alpha=0.4, marker=r'o',
+plt.scatter(whitelist_x, whitelist_y, None, c="lightskyblue", alpha=0.9, marker=r'o',
             label="good")
-plt.scatter(blacklist_x, blacklist_y, None, c="red", alpha=0.8, marker=r'o',
+plt.scatter(blacklist_x, blacklist_y, None, c="black", alpha=0.9, marker=r'o',
             label="bad")
 plt.xlabel("Google hits in the past year, in millions (log scale)")
 plt.ylabel("(SP) Crossword appearances (log scale)")
-# plt.legend(loc=2)
+plt.legend(loc=2)
 plt.show()
