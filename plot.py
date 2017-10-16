@@ -28,6 +28,11 @@ for entry in whitelist:
         # whitelist_y.append(ct[l][entry])
         whitelist_y.append(math.log10(int(sp[l][entry])))
 
+# for list in [whitelist_x, whitelist_y, blacklist_x, blacklist_y]:
+#     for point in list:
+#         print(point)
+#     print("\n")
+
 plt.scatter(whitelist_x, whitelist_y, None, c="lightskyblue", alpha=0.9, marker=r'o',
             label="good")
 plt.scatter(blacklist_x, blacklist_y, None, c="black", alpha=0.9, marker=r'o',

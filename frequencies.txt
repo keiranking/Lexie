@@ -31,3 +31,4 @@ Entries, by length, in dictionary
 3745 14-letter words
 2374 15-letter words
 4281 16-letter words or greater
+
