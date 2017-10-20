@@ -62,8 +62,10 @@ def count(wl_arr_of_arrs, column, has_header=True):
     if not has_header:
         start = 0
     for i in range(start, len(wl_arr_of_arrs)):
-        key = wl_arr_of_arrs[i][column].upper()
-        wl_dict[key] = wl_dict.get(key, 0) + 1 # increment its frequency
+        # key = wl_arr_of_arrs[i][column].upper()
+        # wl_dict[key] = wl_dict.get(key, 0) + 1 # increment its frequency
+        key = wl_arr_of_arrs[i][column].replace(" ","").upper() # bigrams.tsv
+        wl_dict[key] = float(wl_arr_of_arrs[i][0])
         print(key, str(wl_dict[key]))
     print("Entries counted.")
     return wl_dict
@@ -134,8 +136,11 @@ def writeJSON(wl_arr, filepath, sorted_by="keys"):
 # Main
 # ====
 # Take a wordlist, clean it, reorder and write to file, scored or unscored
-writeJSON(segregate(clean(count(remove_before_year(read("../WL-SP -1970.tsv"), 1970), 3), "-ilr")), "test.txt")
+# writeJSON(segregate(clean(count(remove_before_year(read("../WL-SP -1970.tsv"), 1970), 3), "-ilr")), "test.txt")
 # write(segregate(clean(count(read("../WL-SP.tsv"), 3), "-il")), "wl-test.txt", False, "values")
+writeJSON(segregate(count(read("../WL-WK (scored).tsv"), 2)), "bigrams.json.txt")
+
+
 
 # writeJSON([{}, {}, {}, {"ant": 8, "boy": 6, "cat": 4}, {"boxy": 7, "cozy": 5, "dogs": 9}, {"cover": 15, "duvet": 13}], "test.txt", "values")
 
